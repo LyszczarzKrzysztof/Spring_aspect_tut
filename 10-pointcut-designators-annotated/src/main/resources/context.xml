@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <bean id="someBean" class="com.example.SomeBean"/>
+    <bean id="loggingAspect" class="com.example.LoggingAspect"/>
+
+<!--    @annotation dotyczy adnotacji uzywanych na metodach-->
+<!--    @target dotyczy adnotacji stosowanych na klasach-->
+
+    <aop:config>
+<!--        odpalanie tylko metod oznaczonych adnotacja @BusinessMethod-->
+        <aop:pointcut id="businessMethod" expression="@annotation(com.example.BusinessMethod)"/>
+        <aop:pointcut id="businessClassMethods" expression="@target(com.example.BusinessClass)"/>
+        <aop:aspect ref="loggingAspect">
+<!--            uruchamia metody oznaczone adnostacja @BusinessMethod-->
+<!--            <aop:before method="logExecution" pointcut-ref="businessMethod"/>-->
+<!--            uruchamia metody oznaczone adnotacja @BusinessClassMethods-->
+            <aop:before method="logExecution" pointcut-ref="businessClassMethods"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

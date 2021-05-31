@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <bean id="someBean" class="com.example.SomeBean"/>
+    <bean id="loggingAspect" class="com.example.LoggingAspect"/>
+
+
+    <aop:config>
+
+        <aop:aspect ref="loggingAspect">
+<!--            wywyolanie wszystkich metod z jednym argumentem dowolnego typu-->
+<!--                <aop:before method="logWithStringExecution" pointcut="args(argument)"/>-->
+
+<!--            wywolanie dowolnych metod w klasie SomeBean przyjmujacych CHYBA jeden argument String i jednocześnie wszystkich-->
+<!--            metod z jednym argumentem dowolnego typu czyli nowu CHYBA wybiera wszystkie metody z SomeBean przyjmujace jeden-->
+<!--            argument typu String - czesc wspólna obu-->
+<!--            args() sluzy do okreslania ilosci argumentow i typow pewnie tez-->
+            <aop:before method="logWithStringExecution" pointcut="execution(* com.example.SomeBean.*(String)) and args(argument)"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

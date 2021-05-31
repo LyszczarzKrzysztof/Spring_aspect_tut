@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <bean id="someBean" class="com.example.package2.SomeBean"/>
+    <bean id="loggingAspect" class="com.example.LoggingAspect"/>
+    <bean id="anotherBean" class="com.example.package1.AnotherBean"/>
+    <bean id="thirdBean" class="com.example.package1.subpackage.ThirdBean"/>
+
+    <aop:config>
+<!--        pointcut dla konkretnej metody tutaj setSomething - 2 kropki w nawiasie - dowolna ilosc parametrow wraz z zerem-->
+        <aop:pointcut id="setSomethingExecution" expression="execution(* setSomething(..))"/>
+<!--        pointcut dla wszystkich setterow w klasach zarzadzanych przez springa-->
+        <aop:pointcut id="settersExecution" expression="execution(* set*(..))"/>
+        <!--        pointcut dla wszystkich metod w klasach zarzadzanych przez springa-->
+        <aop:pointcut id="anyMethodExecution" expression="execution(* *(..))"/>
+<!--        pointcut dla getterow i setterow w klasach zarzadzanych przez springa-->
+        <aop:pointcut id="gettersAndSettersMethodExecution" expression="execution(* get*(..)) || execution(* set*(..))"/>
+<!--        pointcut dla wszystkich metod bezparametrowych-->
+        <aop:pointcut id="parameterLessMethods" expression="execution(* *())"/>
+<!--        metody z dokladnie jednym parametrem dowolnego typu-->
+        <aop:pointcut id="oneParameterMethods" expression="execution(* *(*))"/>
+        <!--       dowolna metoda z dowolna liczba parametrow dowolnego typu (w tym bezparametrowe)-->
+        <aop:pointcut id="anyOptionalAmountOfParameterMethods" expression="execution(* *(..))"/>
+<!--        z jednym parametrem typu String-->
+        <aop:pointcut id="oneStringParameterMethods" expression="execution(* *(String))"/>
+<!--        z przynajmniej jednym parametrem-->
+        <aop:pointcut id="atLeastOneParameterMethods" expression="execution(* *(*, ..))"/>
+<!--        z przynajmniej jednym parametrem String i jednym dowolnym parametrem i dowolna liczba (takze 0) dowolnych parametrow-->
+        <aop:pointcut id="atLeastOneStringAndOneAnyTypeAnyOptionalTypeParameterMethods" expression="execution(* *(String, *, ..))"/>
+        <!--        pointcut dla wszystkich setterow w klasach zarzadzanych przez springa-->
+        <aop:pointcut id="settersExecutionInSomeBean" expression="execution(* com.example.package2.SomeBean.set*(..))"/>
+
+<!--        wywoluje settery z package1 ale UWAGA: bez podpakietow pakietu package1-->
+        <aop:pointcut id="settersFromPackage1" expression="execution(* com.example.package1.*.set*(..))"/>
+
+        <aop:pointcut id="settersFromAnyPackage" expression="execution(* com.example.package*.*.set*(..))"/>
+
+
+        <aop:pointcut id="settersFromPackage1OnlySubpackagesWithoutPackage1" expression="execution(* com.example.package1..*.*.set*(..))"/>
+
+        <aop:pointcut id="settersFromPackage1WithSubpackages" expression="execution(* com.example.package1..*.set*(..))"/>
+
+        <aop:pointcut id="allReturningStringMethods" expression="execution(String *(..))"/>
+
+        <aop:pointcut id="allVoidMethods" expression="execution(void *(..))"/>
+
+        <aop:pointcut id="allMethodsReturningAnything" expression="execution(* *(..))"/>
+
+        <aop:aspect ref="loggingAspect">
+<!--            <aop:before method="logExecution" pointcut-ref="setSomethingExecution"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersExecution"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="anyMethodExecution"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="gettersAndSettersMethodExecution"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="parameterLessMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="oneParameterMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="anyOptionalAmountOfParameterMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="oneStringParameterMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="atLeastOneParameterMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="atLeastOneStringAndOneAnyTypeAnyOptionalTypeParameterMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersExecutionInSomeBean"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersFromPackage1"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersFromAnyPackage"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersFromPackage1OnlySubpackagesWithoutPackage1"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="settersFromPackage1WithSubpackages"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="allReturningStringMethods"/>-->
+<!--            <aop:before method="logExecution" pointcut-ref="allVoidMethods"/>-->
+            <aop:before method="logExecution" pointcut-ref="allMethodsReturningAnything"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

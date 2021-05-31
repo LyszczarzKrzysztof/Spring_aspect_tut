@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <bean id="customerRepository" class="com.example.CustomerRepositoryImpl"/>
+    <bean id="loggingAspect" class="com.example.LoggingAspect"/>
+    <aop:config>
+        <aop:pointcut id="allGettersFromCustomerRepository"
+                      expression="execution(* com.example.CustomerRepository.get* (..))"/>
+        <aop:pointcut id="allAddersFromCustomerRepository"
+                      expression="execution(* com.example.CustomerRepository.add* (..))"/>
+        <aop:aspect ref="loggingAspect">
+            <!--            tak tez dziala - nie pokazuje bledu jak przy dwoch gwiazdkach-->
+            <!--            <aop:before method="logExecution" pointcut="execution(* com.com.CustomerRepository.get* (*))"/>-->
+            <!--            <aop:before method="logExecution" pointcut="execution(* com.CustomerRepository.get* (**))"/>-->
+            <!--            <aop:after-returning method="warnIfNull"-->
+            <!--                                 pointcut="execution(* com.CustomerRepository.get* (**))" returning="returnedValue"/>-->
+
+            <aop:before method="logExecution" pointcut-ref="allGettersFromCustomerRepository"/>
+            <aop:after-returning method="warnIfNull"
+                                 pointcut-ref="allGettersFromCustomerRepository" returning="returnedValue"/>
+<!--            advices after-throwing nie potrafia obsluzyc wyjatku - potrafia go tylko wykryc moment rzucenia i przy nim zadzialac-->
+            <aop:after-throwing method="serveException" pointcut-ref="allAddersFromCustomerRepository"
+                                throwing="e"/>
+
+            <aop:after method="methodExecuted" pointcut-ref="allAddersFromCustomerRepository"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
